@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	// "html/template"
+	"html/template"
 	"net/http"
 	"strconv"
 
@@ -26,34 +26,38 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for _, snippet := range s {
-		fmt.Fprintf(w, "%v\n", snippet)
+	// for _, snippet := range s {
+	// 	fmt.Fprintf(w, "%v\n", snippet)
+	// }
+
+	data := &templateData{
+		Snippets: s,
 	}
 
-	// files := []string{
-	// 	"./ui/html/home.page.tmpl",
-	// 	"./ui/html/base.layout.tmpl",
-	// 	"./ui/html/footer.partial.tmpl",
-	// }
+	files := []string{
+		"./ui/html/home.page.tmpl",
+		"./ui/html/base.layout.tmpl",
+		"./ui/html/footer.partial.tmpl",
+	}
 
-	// ts, err := template.ParseFiles(files...)
-	// if err != nil {
-	// 	//log.Println(err.Error())
-	// 	// app.errorLog.Println(err.Error())
-	// 	// http.Error(w, "Internal Server Eroor", 500)
-	// 	app.serverError(w, err)
-	// 	return
-	// }
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		//log.Println(err.Error())
+		// app.errorLog.Println(err.Error())
+		// http.Error(w, "Internal Server Eroor", 500)
+		app.serverError(w, err)
+		return
+	}
 
-	// err = ts.Execute(w, nil)
+	err = ts.Execute(w, data)
 
-	// if err != nil {
-	// 	// log.Println(err.Error())
-	// 	// app.errorLog.Println(err.Error())
-	// 	// http.Error(w, "Internal Server Eroor", 500)
-	// 	app.serverError(w, err)
-	// 	return
-	// }
+	if err != nil {
+		// log.Println(err.Error())
+		// app.errorLog.Println(err.Error())
+		// http.Error(w, "Internal Server Eroor", 500)
+		app.serverError(w, err)
+		return
+	}
 
 	// w.Write([]byte("Hello from SnippetBox"))
 }
@@ -76,9 +80,31 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "%v", s)
+	// Create an instance of templatedata struct holding the snippet data.
+	data := &templateData{
+		Snippet: s,
+	}
+
+	files := []string{
+		"./ui/html/show.page.tmpl",
+		"./ui/html/base.layout.tmpl",
+		"./ui/html/footer.partial.tmpl",
+	}
+
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	ts.Execute(w, data)
+	if err != nil {
+		app.serverError(w, err)
+	}
+
+	// fmt.Fprintf(w, "%v", data)
 	// fmt.Fprintf(w, "The requested snippet is %d\n", id)
-	//w.Write([]byte("tHE REQUESTED SNIPPET IS"))
+	// w.Write([]byte("tHE REQUESTED SNIPPET IS"))
 }
 
 func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {

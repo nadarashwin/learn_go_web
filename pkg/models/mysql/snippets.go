@@ -72,7 +72,7 @@ func (m *SnippetModel) Latest() ([]*models.Snippet, error) {
 
 	defer rows.Close()
 
-	// Initialize a empty slice to hold the modesl.Snippets objects.
+	// Initialize a empty slice to hold the models.Snippets objects.
 	snippets := []*models.Snippet{}
 
 	// rows.Next() is used to iterated through the rows in the resulset.
@@ -80,7 +80,7 @@ func (m *SnippetModel) Latest() ([]*models.Snippet, error) {
 	// rows.Scan() method. resultset closes itself after iterating through all the rows.
 	for rows.Next() {
 
-		// A pointed to a new zeroed Snippet struct.
+		// A pointer to a new zeroed Snippet struct.
 		s := &models.Snippet{}
 
 		err = rows.Scan(&s.ID, &s.Title, &s.Content, &s.Created, &s.Expires)
